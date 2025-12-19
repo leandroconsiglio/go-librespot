@@ -13,7 +13,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        ref: windows-support
+        ref: master
     
     - name: Install build dependencies
       run: |
