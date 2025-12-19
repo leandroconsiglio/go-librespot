@@ -68,11 +68,23 @@ func (s *AppState) Write() error {
 		return fmt.Errorf("failed creating temporary file for app state: %w", err)
 	}
 
+	tmpName := tmpFile.Name()
+
 	if err := json.NewEncoder(tmpFile).Encode(&s); err != nil {
+		tmpFile.Close()
+		os.Remove(tmpName)
 		return fmt.Errorf("failed writing marshalled app state: %w", err)
 	}
 
+	if err := tmpFile.Close(); err != nil {
+		os.Remove(tmpName)
+		return fmt.Errorf("failed closing temporary state file: %w", err)
+	}
+
+	_ = os.Remove(s.path)
+
 	if err := os.Rename(tmpFile.Name(), s.path); err != nil {
+		os.Remove(tmpName)
 		return fmt.Errorf("failed replacing app state file: %w", err)
 	}
 
