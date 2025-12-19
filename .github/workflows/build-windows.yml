@@ -59,7 +59,7 @@ jobs:
     - name: Build Go application
       run: |
         go env -w "CGO_ENABLED=1"
-        go build -o daemon.exe ./cmd/daemon/
+        go build -buildvcs=false ./cmd/daemon/
     
     - name: Prepare release package
       run: |
@@ -71,6 +71,10 @@ jobs:
         cp flac-1.5.0/src/libFLAC/.libs/libFLAC-14.dll release/
         cp /usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll release/
         cp /usr/lib/gcc/x86_64-w64-mingw32/14-win32/libssp-0.dll release/
+
+        #Para encontrar ruta dlls:
+        #x86_64-w64-mingw32-gcc -print-file-name=libwinpthread-1.dll
+        #x86_64-w64-mingw32-gcc -print-file-name=libssp-0.dll
     
     - name: Create ZIP archive
       run: |
